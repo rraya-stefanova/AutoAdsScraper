@@ -16,7 +16,7 @@ Displaying job and company data in the terminal
 more...
 Installation
 Clone the repository:
-git clone git@github.com:SemirBaldzhiev/Job-Ads-Analyzer.git
+git clone 
 cd Job-Ads-Analyzer
 Install dependencies:
 # create virtual environment
