@@ -1,70 +1,72 @@
-# Auto-Ad-Scraper
+# Auto Ads Scraper
 
-Auto Ad Scraper is a tool 
-
-## Table of Contents
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Tests](#tests)
-- [License](#license)
-
-## Features
-- Word Cloud for job titles
-- Distribution plots for date posted and count of job ads
-- Filtering and sorting job ads based on different criteria
-- Distribution of job ads by the date companies were founded
-- Displaying job and company data in the terminal
-- more...
+A Python web scraper that extracts car listings from OLX.bg, collecting price, title, and direct links, then saving results to a timestamped CSV file.
 
 ## Installation
-1. Clone the repository:
-    ```bash
-    git clone 
-    cd Job-Ads-Analyzer
-    ```
-2. Install dependencies:
-    ```bash
-    # create virtual environment
-    python3 -m venv .venv 
-    pip install -r requirements.txt
-    ```
-3. Set up the database:
-    - Initialize your SQLite database with job ads and company data.
-    ```bash
-    touch .env #create .env file
 
-    # add this lines in the file .env and chnage db path to desired from you location 
-    # DB_PATH="/home/semir/python-project/Job-Ads-Analyzer/src/job_ads.db"
-    # COMPANY_URL="https://dev.bg/company/"
-    # SITE_URL="https://dev.bg"
+```bash
+# Clone the repository
+git clone <repo-url>
+cd olx_scraper
 
-    cd src/dbsqlite
-    python3 create_tables.py
-    cd ../../
-    ```
-4. Scrape data for job ads and companies
-    - This commands will take more time for execution
-    ```bash
-    export PYTHONPATH="$PYTHONPATH:$PWD"
-    cd src/scraper
-    python3 company_scraper.py
-    python3 ads_scraper.py
-    ```
+# Create and activate a virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Requirements
+
+- Python 3.7+
+- `requests` -- HTTP requests
+- `beautifulsoup4` -- HTML parsing
+- `pytest` -- testing
 
 ## Usage
-1. Run the Job Ads Analyzer CLI (from project directory):
-    ```bash
-    python main.py
-    ```
-2. Follow the on-screen instructions to log in or register.
-3. Use the available commands to analyze job ads data.
 
-## Tests
-1. Run all test with the following command (from project directory):
-    ```bash
-    python3 test.py
-    ```
+```bash
+cd src
+python main.py
+```
 
-## License
-This project is licensed under the [Apache License](LICENSE).
+You will be prompted to enter an OLX.bg search URL. Press Enter to use the default example URL. The scraper will process all pages automatically with a 10-second delay between requests and save the output to a CSV file in the current directory.
+
+### Output
+
+CSV files are saved as `olx_extract_YYYY-MM-DD_HH-MM-SS.csv` with the following columns:
+
+| Column | Description |
+|--------|-------------|
+| Price | Listing price |
+| Product/Title | Cleaned ad title |
+| Ad_URL | Direct link to the ad |
+| Source_URL | Original search URL |
+| Extracted_At | Extraction timestamp |
+
+## Scripts
+
+### `main.py`
+
+Entry point. Displays a welcome banner, prompts the user for an OLX.bg search URL, and runs the scraper.
+
+### `extractor.py`
+
+Core scraping module containing the `Extractor` class. Handles:
+
+- Fetching and parsing HTML pages
+- Detecting pagination and building page URLs
+- Extracting price, title, and ad URL from each listing
+- Skipping ads with missing price or title
+- Saving collected data to CSV
+
+### `test_extractor.py`
+
+Unit tests for the `Extractor` class using pytest. Covers price extraction, title cleaning, URL fallback logic, ad skipping, and CSV output.
+
+```bash
+# Run tests
+cd src
+pytest test_extractor.py -v
+```
